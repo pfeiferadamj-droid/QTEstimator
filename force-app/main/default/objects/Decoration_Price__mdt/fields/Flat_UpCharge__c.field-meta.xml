@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Flat_UpCharge__c</fullName>
+    <label>Flat Up-Charge</label>
+    <description>Flat per-unit cost for this decoration placement</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <type>Currency</type>
+    <precision>18</precision>
+    <scale>2</scale>
+    <required>true</required>
+</CustomField>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Placement__c</fullName>
+    <label>Placement</label>
+    <description>Unique identifier for decoration placement (e.g., Center_Front, Left_Side, Right_Side)</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <type>Text</type>
+    <length>100</length>
+    <required>true</required>
+</CustomField>

@@ -1,0 +1,119 @@
+/* Input Section */
+.input-section {
+    margin-bottom: 1rem;
+}
+
+.help-text {
+    font-size: 0.75rem;
+    color: #706e6b;
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+/* Estimate Section */
+.estimate-section {
+    background-color: #f3f3f3;
+    padding: 1.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #dddbda;
+}
+
+/* Breakdown Grid */
+.breakdown-grid {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #dddbda;
+}
+
+.breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f3f3;
+}
+
+.breakdown-row:last-child {
+    border-bottom: none;
+}
+
+.breakdown-label {
+    flex: 1;
+    text-align: left;
+    color: #3e3e3c;
+}
+
+.breakdown-value {
+    flex: 0 0 auto;
+    text-align: right;
+    font-weight: 500;
+    min-width: 100px;
+    color: #3e3e3c;
+}
+
+/* Discount Row */
+.discount-row {
+    background-color: #e8f4e8;
+}
+
+.discount-value {
+    color: #027e46;
+}
+
+/* Highlight Row */
+.highlight-row {
+    background-color: #fef8e9;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+}
+
+/* Subtotal Row */
+.subtotal-row {
+    background-color: #f3f3f3;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 2px solid #dddbda;
+}
+
+/* Total Row */
+.total-row {
+    background-color: #032d60;
+    color: white;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.total-row .breakdown-label,
+.total-row .breakdown-value {
+    color: white;
+}
+
+.total-value {
+    font-size: 1.25rem;
+    color: white;
+}
+
+/* Disclaimer */
+.disclaimer {
+    padding: 1rem;
+    background-color: #fef8e9;
+    border-left: 4px solid #fe9339;
+    border-radius: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .breakdown-label,
+    .breakdown-value {
+        font-size: 0.875rem;
+    }
+
+    .total-value {
+        font-size: 1.125rem;
+    }
+
+    .estimate-section {
+        padding: 1rem;
+    }
+}

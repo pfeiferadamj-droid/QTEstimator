@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>60.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Quick Turn Headwear Estimator</masterLabel>
+    <description>Estimator component for quick-turn headwear orders with decoration placement pricing and shipping calculations</description>
+
+    <!-- Supported targets -->
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+
+    <!-- Target configurations -->
+    <targetConfigs>
+        <!-- Configuration for Record Pages (Product2) -->
+        <targetConfig targets="lightning__RecordPage">
+            <objects>
+                <object>Product2</object>
+            </objects>
+        </targetConfig>
+
+        <!-- Configuration for Experience Cloud pages -->
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="recordId" type="String" label="Product Record ID"
+                      description="The Product2 record ID (auto-populated on record pages)" />
+            <property name="productName" type="String" label="Product Name Override"
+                      description="Optional override for product display name" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,199 @@
+<template>
+    <lightning-card title="Quick Turn Headwear Estimator" icon-name="standard:product_item">
+
+        <!-- Error Message -->
+        <template if:true={error}>
+            <div class="slds-m-around_medium">
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <h2>{error}</h2>
+                </div>
+            </div>
+        </template>
+
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Calculating..." size="small"></lightning-spinner>
+        </template>
+
+        <!-- Main Content -->
+        <div class="slds-card__body slds-card__body_inner">
+
+            <!-- Input Section -->
+            <div class="input-section slds-grid slds-wrap slds-gutters">
+
+                <!-- Quantity Selection -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+                    <lightning-combobox
+                        name="quantity"
+                        label="Quantity"
+                        value={quantity}
+                        placeholder="Select Quantity"
+                        options={quantityOptions}
+                        onchange={handleQuantityChange}
+                        required
+                        class="slds-m-bottom_small"
+                    ></lightning-combobox>
+                    <div class="help-text">MOQ: 72 units</div>
+                </div>
+
+                <!-- Main Decoration Selection -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+                    <lightning-combobox
+                        name="mainDecoration"
+                        label="Main Decoration Placement"
+                        value={selectedMainDecoration}
+                        placeholder="Select Placement"
+                        options={mainDecorationOptions}
+                        onchange={handleMainDecorationChange}
+                        required
+                        class="slds-m-bottom_small"
+                    ></lightning-combobox>
+                    <div class="help-text">Required decoration</div>
+                </div>
+
+                <!-- Additional Decorations Selection -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+                    <lightning-dual-listbox
+                        name="additionalDecorations"
+                        label="Additional Decorations (Max 2)"
+                        source-label="Available"
+                        selected-label="Selected"
+                        options={additionalDecorationOptions}
+                        value={selectedAdditionalDecorations}
+                        onchange={handleAdditionalDecorationsChange}
+                        min="0"
+                        max="2"
+                        class="slds-m-bottom_small"
+                    ></lightning-dual-listbox>
+                    <div class="help-text">Optional (up to 2)</div>
+                </div>
+
+                <!-- Shipping ZIP Code -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+                    <lightning-input
+                        type="text"
+                        name="zipCode"
+                        label="Shipping ZIP Code"
+                        value={zipCode}
+                        placeholder="12345"
+                        onchange={handleZipCodeChange}
+                        pattern="[0-9]{5}"
+                        maxlength="5"
+                        class="slds-m-bottom_small"
+                    ></lightning-input>
+                    <div class="help-text">5 digits (optional)</div>
+                </div>
+
+            </div>
+
+            <!-- Calculate Button -->
+            <div class="slds-m-top_medium slds-align_absolute-center">
+                <lightning-button
+                    variant="brand"
+                    label="Calculate Estimate"
+                    onclick={handleCalculate}
+                    disabled={isLoading}
+                ></lightning-button>
+            </div>
+
+            <!-- Estimate Output Section -->
+            <template if:true={hasEstimate}>
+                <div class="estimate-section slds-m-top_large">
+
+                    <div class="slds-text-heading_medium slds-m-bottom_medium">
+                        Price Breakdown
+                    </div>
+
+                    <!-- Breakdown Grid -->
+                    <div class="breakdown-grid">
+
+                        <!-- Base Price -->
+                        <div class="breakdown-row">
+                            <div class="breakdown-label">Base Price (per unit):</div>
+                            <div class="breakdown-value">{formattedBasePrice}</div>
+                        </div>
+
+                        <!-- Quantity Discount (if applicable) -->
+                        <template if:true={hasQuantityDiscount}>
+                            <div class="breakdown-row discount-row">
+                                <div class="breakdown-label">Quantity Discount:</div>
+                                <div class="breakdown-value discount-value">-{quantityDiscountAmount}</div>
+                            </div>
+                            <div class="breakdown-row">
+                                <div class="breakdown-label">Discounted Price (per unit):</div>
+                                <div class="breakdown-value">{formattedDiscountedPrice}</div>
+                            </div>
+                        </template>
+
+                        <!-- Main Decoration -->
+                        <div class="breakdown-row">
+                            <div class="breakdown-label">Main Decoration (per unit):</div>
+                            <div class="breakdown-value">+{formattedMainDecorationCharge}</div>
+                        </div>
+
+                        <!-- Additional Decorations (if any) -->
+                        <template if:true={hasAdditionalDecorations}>
+                            <div class="breakdown-row">
+                                <div class="breakdown-label">Additional Decorations (per unit):</div>
+                                <div class="breakdown-value">+{formattedAdditionalDecorationCharge}</div>
+                            </div>
+                        </template>
+
+                        <!-- Per Unit Price -->
+                        <div class="breakdown-row highlight-row">
+                            <div class="breakdown-label"><strong>Per Unit Price:</strong></div>
+                            <div class="breakdown-value"><strong>{formattedPerUnitPrice}</strong></div>
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="breakdown-row">
+                            <div class="breakdown-label">Quantity:</div>
+                            <div class="breakdown-value">×{quantity}</div>
+                        </div>
+
+                        <!-- Subtotal -->
+                        <div class="breakdown-row subtotal-row">
+                            <div class="breakdown-label"><strong>Subtotal:</strong></div>
+                            <div class="breakdown-value"><strong>{formattedSubtotal}</strong></div>
+                        </div>
+
+                        <!-- Shipping (if applicable) -->
+                        <template if:true={hasShipping}>
+                            <div class="breakdown-row">
+                                <div class="breakdown-label">Shipping ({shippingMessage}):</div>
+                                <div class="breakdown-value">+{formattedShipping}</div>
+                            </div>
+                        </template>
+
+                        <!-- Shipping Message (if no shipping) -->
+                        <template if:false={hasShipping}>
+                            <div class="breakdown-row">
+                                <div class="breakdown-label slds-text-color_weak">{shippingMessage}</div>
+                                <div class="breakdown-value"></div>
+                            </div>
+                        </template>
+
+                        <!-- Total -->
+                        <div class="breakdown-row total-row">
+                            <div class="breakdown-label"><strong>Total Estimated Price:</strong></div>
+                            <div class="breakdown-value total-value"><strong>{formattedTotal}</strong></div>
+                        </div>
+
+                    </div>
+
+                    <!-- Disclaimer -->
+                    <div class="disclaimer slds-m-top_medium">
+                        <p class="slds-text-body_small slds-text-color_weak">
+                            This is an estimate only. Final pricing may vary based on decoration complexity,
+                            artwork requirements, and shipping destination. Contact us for a formal quote.
+                        </p>
+                    </div>
+
+                </div>
+            </template>
+
+        </div>
+
+    </lightning-card>
+</template>

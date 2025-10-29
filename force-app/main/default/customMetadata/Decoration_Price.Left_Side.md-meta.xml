@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Wearer Left Side</label>
+    <protected>false</protected>
+    <values>
+        <field>Placement__c</field>
+        <value xsi:type="xsd:string">Left_Side</value>
+    </values>
+    <values>
+        <field>Label__c</field>
+        <value xsi:type="xsd:string">Wearer's Left Side</value>
+    </values>
+    <values>
+        <field>Flat_UpCharge__c</field>
+        <value xsi:type="xsd:double">2.00</value>
+    </values>
+</CustomMetadata>
