@@ -27,6 +27,8 @@
                       description="The Product2 record ID (auto-populated on record pages)" />
             <property name="productName" type="String" label="Product Name Override"
                       description="Optional override for product display name" />
+            <property name="pricebookId" type="String" label="Pricebook ID"
+                      description="Optional Pricebook2 ID (uses standard pricebook if not specified)" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

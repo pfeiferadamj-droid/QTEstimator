@@ -6,10 +6,21 @@ private class QuickTurnEstimatorControllerTest {
         // Create test product
         Product2 testProduct = new Product2(
             Name = 'Test Headwear',
-            IsActive = true,
-            UnitPrice__c = 10.00
+            IsActive = true
         );
         insert testProduct;
+
+        // Get standard pricebook
+        Id standardPricebookId = Test.getStandardPricebookId();
+
+        // Create pricebook entry
+        PricebookEntry pbe = new PricebookEntry(
+            Pricebook2Id = standardPricebookId,
+            Product2Id = testProduct.Id,
+            UnitPrice = 10.00,
+            IsActive = true
+        );
+        insert pbe;
     }
 
     @isTest
@@ -38,7 +49,8 @@ private class QuickTurnEstimatorControllerTest {
                 72,
                 'Center_Front',
                 null,
-                null
+                null,
+                null // Use standard pricebook
             );
         Test.stopTest();
 
@@ -64,7 +76,8 @@ private class QuickTurnEstimatorControllerTest {
                 144,
                 'Center_Front',
                 additionalDecorations,
-                null
+                null,
+                null // Use standard pricebook
             );
         Test.stopTest();
 
@@ -87,7 +100,8 @@ private class QuickTurnEstimatorControllerTest {
                 288,
                 'Center_Front',
                 null,
-                '10001' // Zone A ZIP
+                '10001', // Zone A ZIP
+                null // Use standard pricebook
             );
         Test.stopTest();
 
@@ -110,7 +124,8 @@ private class QuickTurnEstimatorControllerTest {
                 72,
                 'Center_Front',
                 null,
-                'ABC' // Invalid ZIP
+                'ABC', // Invalid ZIP
+                null // Use standard pricebook
             );
         Test.stopTest();
 
@@ -133,7 +148,8 @@ private class QuickTurnEstimatorControllerTest {
                 2880, // High quantity for discount
                 'Center_Front',
                 null,
-                null
+                null,
+                null // Use standard pricebook
             );
         Test.stopTest();
 
@@ -156,7 +172,8 @@ private class QuickTurnEstimatorControllerTest {
                 50, // Below MOQ
                 'Center_Front',
                 null,
-                null
+                null,
+                null // Use standard pricebook
             );
         } catch (AuraHandledException e) {
             exceptionThrown = true;
@@ -181,7 +198,8 @@ private class QuickTurnEstimatorControllerTest {
                 72,
                 '', // Empty decoration
                 null,
-                null
+                null,
+                null // Use standard pricebook
             );
         } catch (AuraHandledException e) {
             exceptionThrown = true;
@@ -209,7 +227,8 @@ private class QuickTurnEstimatorControllerTest {
                     72,
                     'Center_Front',
                     null,
-                    zip
+                    zip,
+                    null // Use standard pricebook
                 );
             shippingAmounts.add(estimate.shippingAmount);
         }
@@ -235,7 +254,8 @@ private class QuickTurnEstimatorControllerTest {
                 576, // Mid-tier quantity for discount
                 'Center_Front',
                 additionalDecorations,
-                '12345' // Zone A ZIP
+                '12345', // Zone A ZIP
+                null // Use standard pricebook
             );
         Test.stopTest();
 

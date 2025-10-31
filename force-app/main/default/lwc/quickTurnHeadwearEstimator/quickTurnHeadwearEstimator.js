@@ -6,8 +6,7 @@ import calculateEstimate from '@salesforce/apex/QuickTurnEstimatorController.cal
 // Product2 fields to fetch
 const PRODUCT_FIELDS = [
     'Product2.Id',
-    'Product2.Name',
-    'Product2.UnitPrice__c'
+    'Product2.Name'
 ];
 
 // Valid quantity options (MOQ = 72, then specific increments)
@@ -16,6 +15,7 @@ const QUANTITY_OPTIONS = [72, 96, 144, 288, 432, 576, 1008, 2880, 5760];
 export default class QuickTurnHeadwearEstimator extends LightningElement {
     @api recordId; // Product2 record ID from page context
     @api productName; // Optional override
+    @api pricebookId; // Optional Pricebook2 ID (uses standard pricebook if not provided)
 
     @track decorationOptions = [];
     @track selectedMainDecoration = '';
@@ -224,7 +224,8 @@ export default class QuickTurnHeadwearEstimator extends LightningElement {
                 quantity: this.quantity,
                 mainDecoration: this.selectedMainDecoration,
                 additionalDecorations: this.selectedAdditionalDecorations,
-                zipCode: this.zipCode
+                zipCode: this.zipCode,
+                pricebookId: this.pricebookId
             });
 
             this.estimate = result;

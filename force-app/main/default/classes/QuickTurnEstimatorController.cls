@@ -34,6 +34,7 @@ public with sharing class QuickTurnEstimatorController {
      * @param mainDecoration Main decoration placement
      * @param additionalDecorations List of additional decoration placements
      * @param zipCode Optional shipping ZIP code
+     * @param pricebookId Optional Pricebook2 ID (uses standard pricebook if not provided)
      * @return PriceEstimate object with breakdown
      */
     @AuraEnabled
@@ -42,7 +43,8 @@ public with sharing class QuickTurnEstimatorController {
         Integer quantity,
         String mainDecoration,
         List<String> additionalDecorations,
-        String zipCode
+        String zipCode,
+        Id pricebookId
     ) {
         try {
             // Validate inputs
@@ -54,15 +56,8 @@ public with sharing class QuickTurnEstimatorController {
                 throw new AuraHandledException('Please select a main decoration placement.');
             }
 
-            // Get product base price
-            Product2 product = [
-                SELECT Id, Name, UnitPrice__c
-                FROM Product2
-                WHERE Id = :productId
-                LIMIT 1
-            ];
-
-            Decimal basePrice = product.UnitPrice__c != null ? product.UnitPrice__c : 0;
+            // Get product base price from pricebook
+            Decimal basePrice = getProductPrice(productId, pricebookId);
 
             // Apply quantity discounts
             Decimal discountedPrice = applyQuantityDiscount(basePrice, quantity);
@@ -114,6 +109,59 @@ public with sharing class QuickTurnEstimatorController {
         } catch (Exception e) {
             throw new AuraHandledException('Error calculating estimate: ' + e.getMessage());
         }
+    }
+
+    /**
+     * Gets product price from pricebook entry
+     * @param productId Product2 record ID
+     * @param pricebookId Pricebook2 record ID (optional)
+     * @return Unit price from pricebook
+     */
+    private static Decimal getProductPrice(Id productId, Id pricebookId) {
+        Id effectivePricebookId = pricebookId;
+
+        // If no pricebook specified, use the standard pricebook
+        if (effectivePricebookId == null) {
+            effectivePricebookId = getStandardPricebookId();
+        }
+
+        // Query PricebookEntry for the product price
+        List<PricebookEntry> entries = [
+            SELECT UnitPrice
+            FROM PricebookEntry
+            WHERE Product2Id = :productId
+            AND Pricebook2Id = :effectivePricebookId
+            AND IsActive = true
+            LIMIT 1
+        ];
+
+        if (entries.isEmpty()) {
+            throw new AuraHandledException(
+                'No active price found for this product in the specified pricebook. ' +
+                'Please ensure the product has a valid price entry.'
+            );
+        }
+
+        return entries[0].UnitPrice;
+    }
+
+    /**
+     * Gets the standard pricebook ID
+     * @return Standard Pricebook2 ID
+     */
+    private static Id getStandardPricebookId() {
+        List<Pricebook2> standardPricebooks = [
+            SELECT Id
+            FROM Pricebook2
+            WHERE IsStandard = true
+            LIMIT 1
+        ];
+
+        if (standardPricebooks.isEmpty()) {
+            throw new AuraHandledException('Standard pricebook not found.');
+        }
+
+        return standardPricebooks[0].Id;
     }
 
     /**
